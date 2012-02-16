@@ -1,0 +1,22 @@
+dl.readed{
+	border: 1px solid grey;
+	border-radius:5px;
+	/*background-color:grey;*/
+	text-decoration:line-through;
+}
+.feed_list:hover{
+	/*background:none;*/
+	text-decoration:none;
+}
+.feed_list{
+}
+/*
+.readed .content{
+	height: 70px;
+	overflow: hidden;
+}
+.readed .content:hover{
+	height: auto;
+	overflow: auto;
+}
+*/
