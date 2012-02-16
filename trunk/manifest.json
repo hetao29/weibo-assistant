@@ -1,0 +1,17 @@
+{
+  "name": "新浪微博阅读帮手",
+  "version": "0.32",
+  "description":"帮你迅速区别已读与未读微博，提高微博的阅读性，同时增强图片上传功能",
+  "content_security_policy": "default-src 'self'"
+  ,
+  "icons": { "16": "LOGO_16x16.png",
+           "48": "LOGO_48x48.png",
+          "128": "LOGO_128.png" },
+  "content_scripts": [
+    {
+      "matches": ["http://*.weibo.com/*"],
+      "js" : ["jquery-1.7.1.min.js","db.js","main.js"],
+      "css": ["style.css"]
+    }
+  ]
+}
