@@ -5,7 +5,7 @@ function check(r,o){
 	if(r){
 		if(parseInt(r.status)==1){
 			//console.log("已经读" +mid);
-			$("#pl_content_homeFeed [node-type='feed_list'] dl[mid="+r.mid+"]").addClass("readed");
+			$("dl[mid="+r.mid+"]").addClass("readed");
 			
 		}else{
 			//console.log("没有读" +mid);
@@ -21,50 +21,50 @@ function check(r,o){
 
 	{
 
-	var xMousePos = 0;
-	var yMousePos = 0;
-	var lastScrolledLeft = 0;
-	var lastScrolledTop = 0;
+		var xMousePos = 0;
+		var yMousePos = 0;
+		var lastScrolledLeft = 0;
+		var lastScrolledTop = 0;
 
-	$(document).mousemove(function(event) {
-		captureMousePosition(event);
-	})  
+		$(document).mousemove(function(event) {
+			captureMousePosition(event);
+		})  
 
-    $(window).scroll(function(event) {
-        if(lastScrolledLeft != $(document).scrollLeft()){
-            xMousePos -= lastScrolledLeft;
-            lastScrolledLeft = $(document).scrollLeft();
-            xMousePos += lastScrolledLeft;
-        }
-        if(lastScrolledTop != $(document).scrollTop()){
-            yMousePos -= lastScrolledTop;
-            lastScrolledTop = $(document).scrollTop();
-            yMousePos += lastScrolledTop;
-        }
-
-		
-		$("#pl_content_homeFeed [node-type='feed_list'] >dl[mid]:not(.readed)").each(function(i,dom){
-			if(xMousePos >=$(this).offset().left && xMousePos<=$(this).offset().left+$(this).width()){
-				if(yMousePos >=$(this).offset().top && yMousePos<=$(this).offset().top+$(this).height()){
-					//已经阅读
-					//console.log($(this).attr("mid"));
-					var o = $(this);
-					setTimeout(function(){
-						var mid=$(o).attr("mid");
-						$(o).attr("readed","true");
-						//已经阅读
-						db.add(mid,{status:1});
-						$(o).addClass("readed");
-					},1000);
-				}
-
+		$(window).scroll(function(event) {
+			if(lastScrolledLeft != $(document).scrollLeft()){
+				xMousePos -= lastScrolledLeft;
+				lastScrolledLeft = $(document).scrollLeft();
+				xMousePos += lastScrolledLeft;
 			}
+			if(lastScrolledTop != $(document).scrollTop()){
+				yMousePos -= lastScrolledTop;
+				lastScrolledTop = $(document).scrollTop();
+				yMousePos += lastScrolledTop;
+			}
+
+			
+			$("dl[mid]:not(.readed)").each(function(i,dom){
+				if(xMousePos >=$(this).offset().left && xMousePos<=$(this).offset().left+$(this).width()){
+					if(yMousePos >=$(this).offset().top && yMousePos<=$(this).offset().top+$(this).height()){
+						//已经阅读
+						//console.log($(this).attr("mid"));
+						var o = $(this);
+						setTimeout(function(){
+							var mid=$(o).attr("mid");
+							$(o).attr("readed","true");
+							//已经阅读
+							db.add(mid,{status:1});
+							$(o).addClass("readed");
+						},1000);
+					}
+
+				}
+			});
 		});
-    });
-	function captureMousePosition(event){
-		xMousePos = event.pageX;
-		yMousePos = event.pageY;
-	}
+		function captureMousePosition(event){
+			xMousePos = event.pageX;
+			yMousePos = event.pageY;
+		}
 
 
 		$("#pl_content_publisherTop [node-type='publishBtn']").live("click",function(){
@@ -76,7 +76,7 @@ function check(r,o){
 		});
 
 
-		$("#pl_content_homeFeed [node-type='feed_list'] >dl[mid]:not(.readed)").live("mouseover",function(){
+		$("dl[mid]:not(.readed)").live("mouseover",function(){
 			var o = $(this);
 			setTimeout(function(){
 				var mid=$(o).attr("mid");
@@ -87,20 +87,20 @@ function check(r,o){
 			},1000);
 		});
 
-	$("#pl_content_homeFeed [node-type='feed_list']").live("DOMSubtreeModified",function(){
-
-		
+		$("#pl_content_homeFeed [node-type='feed_list']").live("DOMSubtreeModified",function(){
 
 			
-		var r=$("#pl_content_homeFeed [node-type='feed_list'] >dl.W_no_border").removeClass("W_no_border");
-		var r=$("#pl_content_homeFeed [node-type='feed_list'] >dl[mid]:not(.readed)");
-		r.each(function(i,dom){
-			var mid=$(this).attr("mid");
-			db.get(mid,check,$(this));
+
+				
+			var r=$("dl.W_no_border").removeClass("W_no_border");
+			var r=$("dl[mid]:not(.readed)");
+			r.each(function(i,dom){
+				var mid=$(this).attr("mid");
+				db.get(mid,check,$(this));
+			});
 		});
-	});
 		
-		$("#pl_content_homeFeed [node-type='feed_list'] >dl[mid]:not(.readed)").each(function(i,dom){
+		$("dl[mid]:not(.readed)").each(function(i,dom){
 			console.log("init");
 			var mid=$(this).attr("mid");
 			db.get(mid,check,$(this));
