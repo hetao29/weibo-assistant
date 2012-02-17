@@ -43,7 +43,7 @@ function check(r,o){
         }
 
 		
-		$("#pl_content_homeFeed [node-type='feed_list'] dl[mid]:not(.readed)").each(function(i,dom){
+		$("#pl_content_homeFeed [node-type='feed_list'] >dl[mid]:not(.readed)").each(function(i,dom){
 			if(xMousePos >=$(this).offset().left && xMousePos<=$(this).offset().left+$(this).width()){
 				if(yMousePos >=$(this).offset().top && yMousePos<=$(this).offset().top+$(this).height()){
 					//已经阅读
@@ -76,7 +76,7 @@ function check(r,o){
 		});
 
 
-		$("#pl_content_homeFeed [node-type='feed_list'] dl[mid]:not(.readed)").live("mouseover",function(){
+		$("#pl_content_homeFeed [node-type='feed_list'] >dl[mid]:not(.readed)").live("mouseover",function(){
 			var o = $(this);
 			setTimeout(function(){
 				var mid=$(o).attr("mid");
@@ -88,14 +88,19 @@ function check(r,o){
 		});
 
 	$("#pl_content_homeFeed [node-type='feed_list']").live("DOMSubtreeModified",function(){
-		var r=$("#pl_content_homeFeed [node-type='feed_list'] dl[mid]:not(.readed)");
+
+		
+
+			
+		var r=$("#pl_content_homeFeed [node-type='feed_list'] >dl.W_no_border").removeClass("W_no_border");
+		var r=$("#pl_content_homeFeed [node-type='feed_list'] >dl[mid]:not(.readed)");
 		r.each(function(i,dom){
 			var mid=$(this).attr("mid");
 			db.get(mid,check,$(this));
 		});
 	});
 		
-		$("#pl_content_homeFeed [node-type='feed_list'] dl[mid]:not(.readed)").each(function(i,dom){
+		$("#pl_content_homeFeed [node-type='feed_list'] >dl[mid]:not(.readed)").each(function(i,dom){
 			console.log("init");
 			var mid=$(this).attr("mid");
 			db.get(mid,check,$(this));

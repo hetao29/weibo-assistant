@@ -2,11 +2,16 @@ dl.readed{
 	border: 1px solid grey;
 	border-radius:5px;
 	/*background-color:grey;*/
-	text-decoration:line-through;
+	/*text-decoration:line-through;*/
+}
+dl.W_no_border{
+	border: 1px solid grey;
+	border-radius:5px;
+	border-bottom:1px solid grey;
 }
 .feed_list:hover{
 	/*background:none;*/
-	text-decoration:none;
+	/*text-decoration:none;*/
 }
 .feed_list{
 }
