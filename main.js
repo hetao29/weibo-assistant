@@ -1,3 +1,10 @@
+function addScriptContent(content){
+    js=unescape(content);
+    var g = document.createElement("script");
+    g.type = "text/javascript";
+    g.text = js;
+    document.getElementsByTagName('head')[0].appendChild(g);
+};
 
 
 function check(r,o){
@@ -13,10 +20,64 @@ function check(r,o){
 
 	}else{
 		//console.log("新记录" +mid);
-		db.add(mid,{content:"x33333333333"});
+		db.add(mid,{content:$(o).html(),status:0});
 	}
 
 }
+
+function captureMousePosition(event){
+	xMousePos = event.pageX;
+	yMousePos = event.pageY;
+}
+
+//{{{1.db init
+var h='for(var k in window.$CONFIG){var ele=document.createElement("input");ele.type="hidden";	ele.id="chrome_plugin_"+k;	ele.value=window.$CONFIG[k];	var parent=document.getElementsByTagName("body")[0];        parent.insertBefore(ele,parent.childNodes[0]);}';
+addScriptContent(h);
+
+function getConfig(k){
+	return $("#chrome_plugin_"+k).val();
+}
+console.log(getConfig("nick"));
+
+db.table=db.table+getConfig("uid");
+db.init(db.table);
+//}}}
+
+
+//{{{2.unread 
+var h='<li action-type="unreaded"><a id="google_chrome_unread" title="相互关注" style="color:red">未读</a></li><li class="W_vline">|</li>';
+
+$('ul[node-type="feedGroup"]').live("DOMSubtreeModified",function(){
+	if(!$("#google_chrome_unread").html()){
+		$('ul[node-type="feedGroup"] .W_vline').eq(0).after(h);
+	}
+});
+$('ul[node-type="feedGroup"] .W_vline').eq(0).after(h);
+
+$("#google_chrome_unread").live("click",function(){
+	//获取所有没有读的显示出来
+	//$(this).parent("div").find("li").removeClass("current");
+	//$(this).parent("li").addClass("current");
+	db.list(1,50,function(r){
+		var list=$("#pl_content_homeFeed [node-type='feed_list']");
+		list.html("");
+		if(r.items.length>0){
+
+			for(var o in r.items){
+				var p=r.items[o].content;
+				var h='<dl class="feed_list W_linecolor" mid="'+r.items[o].mid+'" action-type="feed_list_item">'+p+'</dl>';
+				
+				list.append(h);
+
+			}
+		}else{
+			var h="<dl>您没有未读微博</dl>";list.append(h);
+
+		}
+	});
+});
+
+//}}}
 //$(document).ready(function(){
 
 	{
@@ -61,10 +122,6 @@ function check(r,o){
 				}
 			});
 		});
-		function captureMousePosition(event){
-			xMousePos = event.pageX;
-			yMousePos = event.pageY;
-		}
 
 
 		$("#pl_content_publisherTop [node-type='publishBtn']").live("click",function(){
@@ -162,16 +219,18 @@ XMLHttpRequest.prototype.sendAsBinary = function(datastr) {
 }
 
 //{{{
-	/*
 
-function addScriptContent(content){
-    js=unescape(content);
-    var g = document.createElement("script");
-    g.type = "text/javascript";
-    g.text = js;
-    document.getElementsByTagName('head')[0].appendChild(g);
-};
-	*/
+/*
+for(var k in window.$CONFIG){
+	var html = "<input type='hidden' id='chrome_plugin_"+k+"' value='"+window.$CONFIG[i]+"'/>";
+	$("body").prepend(html);
+	var ele=document.createElement("input");
+	ele.type="hidden";
+	ele.id="chrome_plugin_"+k;
+	ele.value=window.$CONFIG[k];
+	var parent=document.getElementsByTagName('body')[0];
+        parent.insertBefore(ele,parent.childNodes[0]);
+}*/
 //}}}
 function upload(d){
 	

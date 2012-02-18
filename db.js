@@ -1,8 +1,7 @@
 ﻿var db={}
 
-db.fields=["mid","userid","nickname","userlink","content","content_link",
-			"date","source_name","source_link","status","forward_userid","forward_nickname","forward_userlink","forward_content"
-		];
+db.fields=["mid","content","status"];
+db.table="contents_";
 /**
  * @param params
  * params={userid:"","nickname":"",...}
@@ -30,14 +29,14 @@ db.add=function(mid,params){
 			w.push("?");
 			v.push(mid);
 			if(f.length==0)return;
-			var sql="insert into contents("+ f.join(",")+ ") values(" +w.join(",")+")";
+			var sql="insert into "+db.table+"("+ f.join(",")+ ") values(" +w.join(",")+")";
 			//console.log(sql);
 			tx.executeSql(
 				sql,
 				v, null, 
 				function(tx, error) {
 					var sql;
-					sql="update contents set "+ update.join(",")+"where mid=?"
+					sql="update "+db.table+" set "+ update.join(",")+"where mid=?"
 				
 					tx.executeSql(
 						sql,
@@ -57,7 +56,7 @@ db.clear=function(){
 	db.db.transaction(
 		function(tx) {
 			tx.executeSql(
-				"delete from contents",
+				"delete from "+db.table,
 				[], null, 
 				function(tx, error) {
 					console.log(error);
@@ -70,7 +69,7 @@ db.del=function(mid){
 	db.db.transaction(
 		function(tx) {
 			tx.executeSql(
-				"delete from contents where mid=?",
+				"delete from "+db.table+" where mid=?",
 				[mid], null, 
 				function(tx, error) {
 					console.log(error);
@@ -83,7 +82,7 @@ db.get=function(mid,callback,o){
 	db.db.transaction(
 		function(tx) {
 			tx.executeSql(
-				"select * from contents where mid=?",
+				"select * from "+db.table+" where mid=?",
 				[mid],
 				function(tx, result) {
 					var r;
@@ -107,14 +106,14 @@ db.list = function(page,pageSize,callback){
 	db.db.transaction(
 		function(tx) {
 			tx.executeSql(
-				"select count(*) as c from contents",
+				"select count(*) as c from "+db.table+" where status=0",
 				[], 
 				function(tx, result) {
 					total = result.rows.item(0)['c'];
 					db.db.transaction(
 						function(tx) {
 							tx.executeSql(
-								"select * from contents ORDER BY mid desc limit ? offset ?",
+								"select * from "+db.table+" where status=0 ORDER BY mid desc limit ? offset ?",
 								[pageSize,(page-1)*pageSize], 
 								function(tx, result) {
 									var d= new Array();//[];
@@ -151,30 +150,29 @@ db.list = function(page,pageSize,callback){
 db.init = function(){
 	if (window.openDatabase){
 		// openDatabase(name, version, displayName, in unsigned long estimatedSize, in optional creationCallback);
-		db.db =  openDatabase('weibo', '', 'weibo', 1024*1024, function (db) {
-			db.transaction(
-				function(tx) {
-					tx.executeSql(
-						"SELECT COUNT(*) FROM contents",
-						[], null, 
-						function(tx, error) {
-							console.log(error);
-							tx.executeSql(
-								"CREATE TABLE contents ( mid TEXT UNIQUE,  userid REAL,  nickname TEXT, userlink TEXT, content TEXT, content_link TEXT, date REAL, source_name TEXT, source_link TEXT, status REAL, forward_userid REAL,  forward_nickname TEXT, forward_userlink TEXT, forward_content TEXT)",
-								[], null, null);
-						} 
-					); 
+		db.db =  openDatabase('weibo', '', 'weibo', 1024*1024);
+		/*, function (db) {
+					db.create_table();
 				}
 			);
-							
-		});
+		*/
+		db.create_table();
+
 	}
 }
-db.init();
-//db.clear();
-/*
-db.add("xx",{content:"x33333333333"});
-function x(r){alert(r);}
-db.get("xx",x);
-//db.list(1,100);
-*/
+db.create_table=function(){
+	db.db.transaction(
+		function(tx) {
+			tx.executeSql(
+				"SELECT COUNT(*) FROM "+db.table,
+				[], function(tx, result){
+				}, 
+				function(tx, error) {
+					tx.executeSql(
+						"CREATE TABLE "+db.table+" (mid TEXT UNIQUE,content TEXT,status REAL KEY)",
+						[], null, null);
+				} 
+			); 
+		}
+	);
+}

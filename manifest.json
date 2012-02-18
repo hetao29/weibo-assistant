@@ -1,6 +1,6 @@
 {
   "name": "新浪微博阅读帮手",
-  "version": "0.51",
+  "version": "0.52",
   "description":"帮你迅速区别已读与未读微博，提高微博的阅读性，同时增强图片上传功能",
   "content_security_policy": "default-src 'self'"
   ,
